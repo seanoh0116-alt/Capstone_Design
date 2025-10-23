@@ -6,110 +6,28 @@ import numpy as np
 
 plt.rcParams['axes.unicode_minus'] = False
 
-# 행동코드 한글명 매핑
 behavior_mapping = {
-    '111': '수면',
-    '112': '잠못이룸',
-    '121': '식사하기',
-    '122': '간식및음료',
-    '131': '자기치료',
-    '132': '아파서쉼',
-    '133': '의료서비스',
-    '141': '개인위생',
-    '142': '외모관리',
-    '143': '이미용서비스',
-    '149': '기타개인유지',
-    '210': '법인일',
-    '221': '농림어업일',
-    '222': '제조업일',
-    '223': '서비스업일',
-    '229': '기타기업일',
-    '241': '일중휴식',
-    '242': '일관련연수',
-    '249': '기타일관련',
-    '311': '학교수업',
-    '312': '수업간휴식',
-    '313': '자율학습',
-    '314': '학교행사',
-    '319': '기타학교활동',
-    '321': '학원수강',
-    '322': '온라인강의',
-    '323': '스스로학습',
-    '329': '기타학습',
-    '411': '식사준비',
-    '412': '간식만들기',
-    '413': '설거지정리',
-    '421': '세탁하기',
-    '422': '세탁물건조',
-    '423': '다림질정리',
-    '424': '의류수선',
-    '431': '청소',
-    '432': '정리',
-    '433': '쓰레기처리',
-    '461': '반려동물돌봄',
-    '462': '식물돌보기',
-    '463': '동식물서비스',
-    '471': '매장쇼핑',
-    '472': '온라인쇼핑',
-    '473': '서비스구입',
-    '474': '온라인서비스',
-    '479': '기타쇼핑',
-    '511': '신체적돌보기',
-    '512': '간호하기',
-    '513': '훈육가르치기',
-    '514': '책읽어주기',
-    '515': '아이놀아주기',
-    '516': '상담방문',
-    '519': '기타돌보기',
-    '711': '대면교제',
-    '712': '화상교제',
-    '713': '문자교제',
-    '714': 'SNS교제',
-    '719': '기타교제',
-    '731': '개인종교활동',
-    '732': '종교모임',
-    '739': '기타종교',
-    '821': '책읽기',
-    '822': '신문보기',
-    '823': '잡지보기',
-    '824': '방송시청',
-    '825': '비디오시청',
-    '826': '라디오듣기',
-    '827': '음악듣기',
-    '828': '인터넷검색',
-    '829': '기타미디어',
-    '831': '걷기산책',
-    '832': '달리기조깅',
-    '833': '등산',
-    '834': '자전거',
-    '835': '개인운동',
-    '836': '구기운동',
-    '837': '낚시사냥',
-    '839': '기타스포츠',
-    '841': '집단게임',
-    '842': 'PC게임',
-    '843': '모바일게임',
-    '849': '기타게임',
-    '851': '휴식',
-    '852': '담배피우기',
-    '891': '개인취미',
-    '892': '교양학습',
-    '893': '유흥',
-    '899': '기타여가',
-    '910': '개인유지이동',
-    '921': '출근',
-    '922': '퇴근',
-    '923': '출장이동',
-    '924': '일이동',
-    '930': '학습이동',
-    '940': '가정관리이동',
-    '951': '아이돌봄이동',
-    '952': '미성년돌봄이동',
-    '953': '성인돌봄이동',
-    '954': '독립성인돌봄이동',
-    '960': '자원봉사이동',
-    '970': '교제이동',
-    '980': '문화여가이동'
+    '111': '수면','112': '잠못이룸','121': '식사하기','122': '간식및음료','131': '자기치료',
+    '132': '아파서쉼','133': '의료서비스','141': '개인위생','142': '외모관리','143': '이미용서비스',
+    '149': '기타개인유지','210': '법인일','221': '농림어업일','222': '제조업일','223': '서비스업일',
+    '229': '기타기업일','241': '일중휴식','242': '일관련연수','249': '기타일관련','311': '학교수업',
+    '312': '수업간휴식','313': '자율학습','314': '학교행사','319': '기타학교활동','321': '학원수강',
+    '322': '온라인강의','323': '스스로학습','329': '기타학습','411': '식사준비','412': '간식만들기',
+    '413': '설거지정리','421': '세탁하기','422': '세탁물건조','423': '다림질정리','424': '의류수선',
+    '431': '청소','432': '정리','433': '쓰레기처리','461': '반려동물돌봄','462': '식물돌보기',
+    '463': '동식물서비스','471': '매장쇼핑','472': '온라인쇼핑','473': '서비스구입','474': '온라인서비스',
+    '479': '기타쇼핑','511': '신체적돌보기','512': '간호하기','513': '훈육가르치기','514': '책읽어주기',
+    '515': '아이놀아주기','516': '상담방문','519': '기타돌보기','711': '대면교제','712': '화상교제',
+    '713': '문자교제','714': 'SNS교제','719': '기타교제','731': '개인종교활동','732': '종교모임',
+    '739': '기타종교','821': '책읽기','822': '신문보기','823': '잡지보기','824': '방송시청',
+    '825': '비디오시청','826': '라디오듣기','827': '음악듣기','828': '인터넷검색','829': '기타미디어',
+    '831': '걷기산책','832': '달리기조깅','833': '등산','834': '자전거','835': '개인운동',
+    '836': '구기운동','837': '낚시사냥','839': '기타스포츠','841': '집단게임','842': 'PC게임',
+    '843': '모바일게임','849': '기타게임','851': '휴식','852': '담배피우기','891': '개인취미',
+    '892': '교양학습','893': '유흥','899': '기타여가','910': '개인유지이동','921': '출근',
+    '922': '퇴근','923': '출장이동','924': '일이동','930': '학습이동','940': '가정관리이동',
+    '951': '아이돌봄이동','952': '미성년돌봄이동','953': '성인돌봄이동','954': '독립성인돌봄이동',
+    '960': '자원봉사이동','970': '교제이동','980': '문화여가이동'
 }
 
 def map_code_to_name(code):
@@ -172,8 +90,13 @@ def group_hourly(analysis_results):
             hourly_results.append({'hour':hour, 'total_count':0, 'top_behaviors':[]})
     return hourly_results
 
+def get_unique_options(df, col):
+    if col is None or col not in df.columns:
+        return ["전체"]
+    unique_vals = df[col].dropna().unique()
+    unique_strs = sorted(set(str(v).strip() for v in unique_vals if str(v).strip() != ""))
+    return ["전체"] + unique_strs if unique_strs else ["전체"]
 
-# 여러 인코딩 시도해서 CSV 읽는 함수
 def read_csv_with_multiple_encodings(file):
     encodings = ['utf-8', 'cp949', 'euc-kr', 'latin1']
     for enc in encodings:
@@ -183,7 +106,6 @@ def read_csv_with_multiple_encodings(file):
             continue
     raise ValueError("지원하지 않는 파일 인코딩입니다.")
 
-# 스트림릿 앱 UI 시작
 st.title("📊 생활시간조사 재실자 행동 분석 시스템 (Streamlit 웹버전)")
 
 uploaded_file = st.file_uploader("CSV 파일 업로드 (.csv)", type=["csv"])
@@ -191,9 +113,8 @@ uploaded_file = st.file_uploader("CSV 파일 업로드 (.csv)", type=["csv"])
 if uploaded_file is not None:
     try:
         data, used_enc = read_csv_with_multiple_encodings(uploaded_file)
-        st.success(f"파일이 정상적으로 업로드 되었습니다! (인코딩: {used_enc})")
+        st.success(f"파일 업로드 성공! (인코딩: {used_enc})")
         
-        # 컬럼 자동 탐색
         region_col = next((c for c in data.columns if '시도' in c or 'region' in c.lower()), None)
         weekday_col = next((c for c in data.columns if '요일' in c or 'weekday' in c.lower()), None)
         household_col = next((c for c in data.columns if '가구원' in c or 'household' in c.lower()), None)
@@ -201,37 +122,42 @@ if uploaded_file is not None:
         age_col = next((c for c in data.columns if '연령' in c or 'age' in c.lower()), None)
         marriage_col = next((c for c in data.columns if '혼인' in c or 'marriage' in c.lower()), None)
         
-        # 조건 선택 UI
-        region = st.selectbox("행정구역 선택", options=["전체"] + sorted(data[region_col].dropna().unique().astype(str).tolist()) if region_col else ["전체"])
-        weekday = st.selectbox("요일 선택", options=["전체"] + sorted(data[weekday_col].dropna().unique().astype(str).tolist()) if weekday_col else ["전체"])
-        household = st.selectbox("가구원수 선택", options=["전체"] + sorted(data[household_col].dropna().unique().astype(str).tolist()) if household_col else ["전체"])
-        gender = st.selectbox("성별 선택", options=["전체"] + sorted(data[gender_col].dropna().unique().astype(str).tolist()) if gender_col else ["전체"])
-        age = st.selectbox("연령대 선택", options=["전체"] + sorted(data[age_col].dropna().unique().astype(str).tolist()) if age_col else ["전체"])
-        marriage = st.selectbox("혼인상태 선택", options=["전체"] + sorted(data[marriage_col].dropna().unique().astype(str).tolist()) if marriage_col else ["전체"])
+        region_options = get_unique_options(data, region_col)
+        weekday_options = get_unique_options(data, weekday_col)
+        household_options = get_unique_options(data, household_col)
+        gender_options = get_unique_options(data, gender_col)
+        age_options = get_unique_options(data, age_col)
+        marriage_options = get_unique_options(data, marriage_col)
+        
+        region = st.selectbox("행정구역 선택", options=region_options)
+        weekday = st.selectbox("요일 선택", options=weekday_options)
+        household = st.selectbox("가구원수 선택", options=household_options)
+        gender = st.selectbox("성별 선택", options=gender_options)
+        age = st.selectbox("연령대 선택", options=age_options)
+        marriage = st.selectbox("혼인상태 선택", options=marriage_options)
         
         def filter_df(df):
             tmp = df.copy()
             if region_col and region != "전체":
-                tmp = tmp[tmp[region_col].astype(str) == region]
+                tmp = tmp[tmp[region_col].astype(str).str.strip() == region]
             if weekday_col and weekday != "전체":
-                tmp = tmp[tmp[weekday_col].astype(str) == weekday]
+                tmp = tmp[tmp[weekday_col].astype(str).str.strip() == weekday]
             if household_col and household != "전체":
-                tmp = tmp[tmp[household_col].astype(str) == household]
+                tmp = tmp[tmp[household_col].astype(str).str.strip() == household]
             if gender_col and gender != "전체":
-                tmp = tmp[tmp[gender_col].astype(str) == gender]
+                tmp = tmp[tmp[gender_col].astype(str).str.strip() == gender]
             if age_col and age != "전체":
-                tmp = tmp[tmp[age_col].astype(str) == age]
+                tmp = tmp[tmp[age_col].astype(str).str.strip() == age]
             if marriage_col and marriage != "전체":
-                tmp = tmp[tmp[marriage_col].astype(str) == marriage]
+                tmp = tmp[tmp[marriage_col].astype(str).str.strip() == marriage]
             return tmp
         
         if st.button("분석 실행"):
             filtered = filter_df(data)
-            st.write(f"조건 필터링 후 데이터 수: {len(filtered):,}개")
+            st.write(f"필터링 후 데이터 수: {len(filtered):,}개")
             if len(filtered) == 0:
                 st.warning("조건에 맞는 데이터가 없습니다.")
             else:
-                # 주행동시간대 컬럼 리스트
                 time_cols = [col for col in filtered.columns if is_main_activity_column(col)]
                 time_cols.sort(key=parse_time_from_column)
                 analysis_results = []
@@ -250,13 +176,11 @@ if uploaded_file is not None:
                 analysis_results.sort(key=lambda x: x['sort_key'])
                 hourly_results = group_hourly(analysis_results)
                 
-                # 텍스트 결과 출력
                 for hr in hourly_results:
                     st.markdown(f"### {hr['hour']:02d}:00~{hr['hour']:02d}:59 (총 {hr['total_count']}건)")
                     for i, b in enumerate(hr['top_behaviors']):
                         st.markdown(f"{i+1}위: **{b['name']}** ({b['percentage']:.1f}%)")
                 
-                # 막대그래프 그리기
                 hours = [hr['hour'] for hr in hourly_results]
                 bar_width = 0.28
                 
