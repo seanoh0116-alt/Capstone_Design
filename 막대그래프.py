@@ -4,10 +4,9 @@ import re
 import matplotlib.pyplot as plt
 import numpy as np
 
-# 한글 폰트 설정 (matplotlib가 웹에서 자동 지원하지 않을 수 있으니 시스템폰트 설치 시 필요)
 plt.rcParams['axes.unicode_minus'] = False
 
-# 3자리 행동코드 매핑 테이블
+# 행동코드 한글명 매핑
 behavior_mapping = {
     '111': '수면',
     '112': '잠못이룸',
@@ -130,7 +129,6 @@ def is_main_activity_column(col):
     return '주행동시간대' in col and '동시행동시간대' not in col
 
 def parse_time_from_column(col):
-    # 시간 문자열에서 분 단위로 키 생성 (예: 08:10 -> 8*60+10=490)
     import re
     patterns = [
         r'(오전|오후)\s*(\d{1,2}):(\d{2})',
@@ -174,18 +172,28 @@ def group_hourly(analysis_results):
             hourly_results.append({'hour':hour, 'total_count':0, 'top_behaviors':[]})
     return hourly_results
 
-# Streamlit 앱 시작 ----------------------------------------------------
 
-st.title("📊 생활시간조사 재실자 행동 분석 시스템")
+# 여러 인코딩 시도해서 CSV 읽는 함수
+def read_csv_with_multiple_encodings(file):
+    encodings = ['utf-8', 'cp949', 'euc-kr', 'latin1']
+    for enc in encodings:
+        try:
+            return pd.read_csv(file, encoding=enc), enc
+        except:
+            continue
+    raise ValueError("지원하지 않는 파일 인코딩입니다.")
 
-uploaded_file = st.file_uploader("CSV 파일 업로드", type=["csv"])
+# 스트림릿 앱 UI 시작
+st.title("📊 생활시간조사 재실자 행동 분석 시스템 (Streamlit 웹버전)")
+
+uploaded_file = st.file_uploader("CSV 파일 업로드 (.csv)", type=["csv"])
+
 if uploaded_file is not None:
     try:
-        data = pd.read_csv(uploaded_file)
-        st.write(f"데이터 {len(data):,}건 로드 완료")
+        data, used_enc = read_csv_with_multiple_encodings(uploaded_file)
+        st.success(f"파일이 정상적으로 업로드 되었습니다! (인코딩: {used_enc})")
         
-        # 자동 컬럼 매핑 (간단 버전)
-        columns = data.columns.str.lower()
+        # 컬럼 자동 탐색
         region_col = next((c for c in data.columns if '시도' in c or 'region' in c.lower()), None)
         weekday_col = next((c for c in data.columns if '요일' in c or 'weekday' in c.lower()), None)
         household_col = next((c for c in data.columns if '가구원' in c or 'household' in c.lower()), None)
@@ -223,7 +231,7 @@ if uploaded_file is not None:
             if len(filtered) == 0:
                 st.warning("조건에 맞는 데이터가 없습니다.")
             else:
-                # 주행동시간대 컬럼 선택
+                # 주행동시간대 컬럼 리스트
                 time_cols = [col for col in filtered.columns if is_main_activity_column(col)]
                 time_cols.sort(key=parse_time_from_column)
                 analysis_results = []
@@ -242,9 +250,9 @@ if uploaded_file is not None:
                 analysis_results.sort(key=lambda x: x['sort_key'])
                 hourly_results = group_hourly(analysis_results)
                 
-                # 결과 텍스트 보여주기
+                # 텍스트 결과 출력
                 for hr in hourly_results:
-                    st.markdown(f"### {hr['hour']:02d}:00~{hr['hour']:02d}:59 (총 {hr['total_count']}개)")
+                    st.markdown(f"### {hr['hour']:02d}:00~{hr['hour']:02d}:59 (총 {hr['total_count']}건)")
                     for i, b in enumerate(hr['top_behaviors']):
                         st.markdown(f"{i+1}위: **{b['name']}** ({b['percentage']:.1f}%)")
                 
@@ -295,4 +303,4 @@ if uploaded_file is not None:
                 
                 st.pyplot(fig)
     except Exception as e:
-        st.error(f"오류 발생: {e}")
+        st.error(f"파일을 읽는 중 오류 발생: {e}")
